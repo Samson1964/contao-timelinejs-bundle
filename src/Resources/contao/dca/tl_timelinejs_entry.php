@@ -3,14 +3,7 @@
 /**
  * Contao TimelineJS.
  *
- * @package   Contao TimelineJS.
- * @author    David Molineus <http://netzmacht.de>
- * @license   MPL/2.0
- * @copyright 2013-2016 netzmacht David Molineus
  */
-
-use Netzmacht\Contao\TimelineJs\Dca\EntryCallbacks;
-use Netzmacht\Contao\Toolkit\Dca\Callback\CallbackFactory;
 
 /**
  * Table tl_timelinejs_entry
@@ -31,9 +24,6 @@ $GLOBALS['TL_DCA']['tl_timelinejs_entry'] = array
                 'id' => 'primary'
             )
         ),
-        'onsubmit_callback' => [
-            EntryCallbacks::callback('purgeCache'),
-        ],
     ),
     // List
     'list'                  => array
@@ -43,7 +33,6 @@ $GLOBALS['TL_DCA']['tl_timelinejs_entry'] = array
             'mode'                  => 4,
             'headerFields'          => array('title'),
             'fields'                => array('type'),
-            'child_record_callback' => EntryCallbacks::callback('listEntry'),
             'panelLayout'           => 'filter,sort;search,limit',
             'flag'                  => 12,
         ),
@@ -81,12 +70,6 @@ $GLOBALS['TL_DCA']['tl_timelinejs_entry'] = array
                 'label'           => &$GLOBALS['TL_LANG']['tl_timelinejs_entry']['toggle'],
                 'icon'            => 'visible.gif',
                 'attributes'      => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
-                'button_callback' => CallbackFactory::stateButton('tl_timelinejs_entry', 'published'),
-                'toolkit'         => array(
-                    'state_button' => array(
-                        'column' => 'published'
-                    )
-                )
             ),
             'delete' => array
             (
@@ -101,52 +84,6 @@ $GLOBALS['TL_DCA']['tl_timelinejs_entry'] = array
                 'href'  => 'act=show',
                 'icon'  => 'show.gif'
             )
-        )
-    ),
-    // Edit
-    'edit'                  => array
-    (
-        'buttons_callback' => array()
-    ),
-    // Palettes
-    'palettes'              => array('__selector__' => array('type')),
-    'metapalettes'          => array
-    (
-        '_base_'               => array(
-            'entry' => array('headline', 'type', 'published'),
-            'date'  => array(),
-            'text'  => array(),
-            'media' => array()
-        ),
-        'default'              => array
-        (
-            'entry'     => array('headline', 'type'),
-            'published' => array('published'),
-        ),
-        'event extends _base_' => array
-        (
-            '+entry' => array('category before published'),
-            'date'   => array('startDate', 'startDisplay', 'endDate', 'endDisplay', 'dateDisplay', 'dateFormat'),
-            'text'   => array('text'),
-            'media'  => array(':hide', 'media'),
-            'style'  => array(':hide', 'background')
-        ),
-        'title extends _base_' => array(
-            'text'  => array('text'),
-            'media' => array('media'),
-            'style' => array('background')
-        ),
-        'era extends _base_'   => array(
-            'date' => array('startDate', 'endDate'),
-        )
-    ),
-    // Subpalettes
-    'metasubselectpalettes' => array
-    (
-        'media' => array(
-            'media'  => array('mediaUrl', 'mediaCaption', 'mediaCredit', 'mediaThumbnail', 'mediaLink'),
-            'iframe' => array('mediaUrl', 'mediaCaption', 'mediaCredit', 'mediaThumbnail'),
-            'quote'  => array('mediaQuote', 'mediaCaption', 'mediaCredit', 'mediaThumbnail', 'mediaLink'),
         )
     ),
     // Fields
@@ -201,9 +138,6 @@ $GLOBALS['TL_DCA']['tl_timelinejs_entry'] = array
             'flag'      => 3,
             'length'    => 4,
             'eval'      => array('mandatory' => true, 'tl_class' => 'w50', 'maxlength' => 32),
-            'save_callback' => [
-        //        EntryCallbacks::callback('validateStartDate'),
-            ],
             'sql'       => "varchar(32) NOT NULL default ''"
         ),
         'startDisplay'   => array
@@ -222,9 +156,6 @@ $GLOBALS['TL_DCA']['tl_timelinejs_entry'] = array
             'inputType'     => 'text',
             'search'        => true,
             'eval'          => array('tl_class' => 'w50', 'maxlength' => 32),
-            'save_callback' => [
-                EntryCallbacks::callback('validateEndDate'),
-            ],
             'sql'           => "varchar(32) NOT NULL default ''"
         ),
         'endDisplay'     => array
@@ -295,9 +226,6 @@ $GLOBALS['TL_DCA']['tl_timelinejs_entry'] = array
                 'fieldType'      => 'radio',
                 'extensions'     => 'jpg,png,gif'
             ),
-            'wizard'    => array(
-                CallbackFactory::filePicker()
-            ),
             'sql'       => "varchar(255) NOT NULL default ''"
         ),
         'mediaCredit'    => array
@@ -330,9 +258,6 @@ $GLOBALS['TL_DCA']['tl_timelinejs_entry'] = array
                 'files'          => true,
                 'extensions'     => 'jpg,png,gif'
             ),
-            'wizard'    => array(
-                CallbackFactory::filePicker(),
-            ),
             'sql'       => "varchar(255) NOT NULL default ''"
         ),
         'mediaLink'      => array
@@ -344,9 +269,6 @@ $GLOBALS['TL_DCA']['tl_timelinejs_entry'] = array
                 'decodeEntities' => true,
                 'maxlength'      => 255,
                 'tl_class'       => 'w50 wizard',
-            ),
-            'wizard'    => array(
-                CallbackFactory::pagePicker(),
             ),
             'sql'       => "varchar(255) NOT NULL default ''"
         ),
@@ -372,7 +294,7 @@ $GLOBALS['TL_DCA']['tl_timelinejs_entry'] = array
             'inputType'        => 'select',
             'exclude'          => true,
             'filter'           => true,
-            'options_callback' => EntryCallbacks::callback('getCategoryOptions'),
+            //'options_callback' => EntryCallbacks::callback('getCategoryOptions'),
             'eval'             => array(
                 'mandatory'          => false,
                 'maxlength'          => 255,
@@ -391,9 +313,6 @@ $GLOBALS['TL_DCA']['tl_timelinejs_entry'] = array
             'inputType'     => 'checkbox',
             'eval'          => array('doNotCopy' => true, 'tl_class' => 'm12 w50'),
             'sql'           => "char(1) NOT NULL default ''",
-            'save_callback' => [
-                EntryCallbacks::callback('purgeCache'),
-            ],
         ),
         'background'     => array
         (
@@ -408,10 +327,6 @@ $GLOBALS['TL_DCA']['tl_timelinejs_entry'] = array
                 'filesOnly'      => true,
                 'fieldType'      => 'radio',
                 'extensions'     => 'jpg,png,gif'
-            ),
-            'wizard'    => array(
-                CallbackFactory::colorPicker(),
-                CallbackFactory::filePicker()
             ),
             'sql'       => "varchar(255) NOT NULL default ''"
         ),

@@ -3,15 +3,7 @@
 /**
  * Contao TimelineJS.
  *
- * @package   Contao TimelineJS.
- * @author    David Molineus <http://netzmacht.de>
- * @license   MPL/2.0
- * @copyright 2013-2016 netzmacht David Molineus
  */
-
-use Netzmacht\Contao\TimelineJs\Builder\OptionsBuilder;
-use Netzmacht\Contao\TimelineJs\Dca\TimelineCallbacks;
-use Netzmacht\Contao\Toolkit\Dca;
 
 $GLOBALS['TL_DCA']['tl_timelinejs'] = array
 (
@@ -28,9 +20,6 @@ $GLOBALS['TL_DCA']['tl_timelinejs'] = array
                 'id' => 'primary'
             )
         ),
-        'onsubmit_callback' => [
-            TimelineCallbacks::callback('purgeCache'),
-        ],
     ),
     // List
     'list'            => array
@@ -91,21 +80,6 @@ $GLOBALS['TL_DCA']['tl_timelinejs'] = array
             )
         )
     ),
-    // palettes
-    'metapalettes'    => array(
-        'default' => array(
-            'title'     => array('title', 'scale', 'language', 'dataSource', 'startAtSlide', 'startAtEnd'),
-            'config'    => array('categories', 'relativeDate', 'useBc'),
-            'options'   => array(':hide', 'sizes', 'layout', 'timenavPosition'),
-            'style'     => array('width', 'height', 'fonts', 'defaultBgColor', 'baseClass'),
-            'browser'   => array('hashBookmarks', 'trackResize', 'ease', 'duration', 'zoomSequence', 'dragging', 'slideDefaultFade'),
-            'api'       => array('apiKeys', 'mapType'),
-            'analytics' => array(':hidden', 'gaPropertyId', 'trackEvents')
-        ),
-    ),
-    // subpalettes
-    'metasubpalettes' => array
-    (),
     // Fields
     'fields'          => array
     (
@@ -139,7 +113,7 @@ $GLOBALS['TL_DCA']['tl_timelinejs'] = array
             'label'            => &$GLOBALS['TL_LANG']['tl_timelinejs']['language'],
             'exclude'          => true,
             'inputType'        => 'select',
-            'options_callback' => TimelineCallbacks::callback('getSupportedLanguages'),
+            //'options_callback' => TimelineCallbacks::callback('getSupportedLanguages'),
             'eval'             => array(
                 'mandatory'          => false,
                 'maxlength'          => 8,
@@ -155,7 +129,7 @@ $GLOBALS['TL_DCA']['tl_timelinejs'] = array
             'exclude'          => true,
             'inputType'        => 'select',
             'default'          => 'default',
-            'options_callback' => TimelineCallbacks::callback('getDataSources'),
+            //'options_callback' => TimelineCallbacks::callback('getDataSources'),
             'eval'             => array(
                 'mandatory'          => true,
                 'tl_class'           => 'w50',
@@ -185,26 +159,8 @@ $GLOBALS['TL_DCA']['tl_timelinejs'] = array
             'label'     => &$GLOBALS['TL_LANG']['tl_timelinejs']['sizes'],
             'exclude'   => true,
             'inputType' => 'multiColumnWizard',
-            'options'   => OptionsBuilder::getSizeOptionNames(),
+            //'options'   => OptionsBuilder::getSizeOptionNames(),
             'reference' => &$GLOBALS['TL_LANG']['tl_timelinejs']['sizesOptions'],
-            'eval'      => array(
-                'tl_class'     => 'clr',
-                'helpwizard'   => true,
-                'columnFields' => array(
-                    'name'  => array(
-                        'label'     => &$GLOBALS['TL_LANG']['tl_timelinejs']['sizeOptionName'],
-                        'inputType' => 'select',
-                        'reference' => &$GLOBALS['TL_LANG']['tl_timelinejs']['sizesOptions'],
-                        'options'   => OptionsBuilder::getSizeOptionNames(),
-                        'eval'      => array('style' => 'width: 300px')
-                    ),
-                    'value' => array(
-                        'label'     => &$GLOBALS['TL_LANG']['tl_timelinejs']['sizeOptionValue'],
-                        'inputType' => 'text',
-                        'eval'      => array('style' => 'width: 100px')
-                    ),
-                )
-            ),
             'sql'       => "blob NULL"
         ),
         'timenavPosition' => array
@@ -230,22 +186,6 @@ $GLOBALS['TL_DCA']['tl_timelinejs'] = array
             ),
             'sql'       => "varchar(16) NOT NULL default ''"
         ),
-//        'relativeDate'    => array
-//        (
-//            'label'     => &$GLOBALS['TL_LANG']['tl_timelinejs']['relativeDate'],
-//            'exclude'   => true,
-//            'inputType' => 'checkbox',
-//            'eval'      => array('tl_class' => 'w50 m12'),
-//            'sql'       => "char(1) NOT NULL default ''"
-//        ),
-//        'useBc'           => array
-//        (
-//            'label'     => &$GLOBALS['TL_LANG']['tl_timelinejs']['useBc'],
-//            'exclude'   => true,
-//            'inputType' => 'checkbox',
-//            'eval'      => array('tl_class' => 'w50'),
-//            'sql'       => "char(1) NOT NULL default ''"
-//        ),
         'hashBookmarks'           => array
         (
             'label'     => &$GLOBALS['TL_LANG']['tl_timelinejs']['hashBookmarks'],
@@ -279,24 +219,6 @@ $GLOBALS['TL_DCA']['tl_timelinejs'] = array
             'inputType' => 'multiColumnWizard',
             'options'   => array('apiKeyFlickr', 'apiKeyGooglemaps', 'gaPropertyId'),
             'reference' => &$GLOBALS['TL_LANG']['tl_timelinejs']['apiKeyOptions'],
-            'eval'      => array(
-                'tl_class'     => 'clr',
-                'helpwizard'   => true,
-                'columnFields' => array(
-                    'name'  => array(
-                        'label'     => &$GLOBALS['TL_LANG']['tl_timelinejs']['apiKeyName'],
-                        'inputType' => 'select',
-                        'reference' => &$GLOBALS['TL_LANG']['tl_timelinejs']['apiKeyOptions'],
-                        'options'   => array('apiKeyFlickr', 'apiKeyGooglemaps', 'gaPropertyId'),
-                        'eval'      => array('style' => 'width: 180px', 'chosen' => true)
-                    ),
-                    'value' => array(
-                        'label'     => &$GLOBALS['TL_LANG']['tl_timelinejs']['apiKeyValue'],
-                        'inputType' => 'text',
-                        'eval'      => array('style' => 'width: 300px')
-                    ),
-                )
-            ),
             'sql'       => "blob NULL"
         ),
         'fonts'           => array
@@ -405,9 +327,6 @@ $GLOBALS['TL_DCA']['tl_timelinejs'] = array
                 'filesOnly'      => true,
                 'fieldType'      => 'radio',
                 'extensions'     => 'jpg,png,gif'
-            ),
-            'wizard'    => array(
-                Dca\Callback\CallbackFactory::colorPicker()
             ),
             'sql'       => "varchar(255) NOT NULL default ''"
         ),
