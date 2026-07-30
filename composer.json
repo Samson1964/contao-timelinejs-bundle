@@ -1,7 +1,14 @@
 {
     "name": "schachbulle/contao-timelinejs-bundle",
     "type": "contao-bundle",
-    "description": "TimelineJS für Contao 4",
+    "description": "Bindet die Zeitleisten-Bibliothek TimelineJS als Inhaltselement ein.",
+    "keywords": [
+        "contao",
+        "zeitleiste",
+        "timelinejs",
+        "inhaltselement"
+    ],
+    "homepage": "https://github.com/Samson1964/contao-timelinejs-bundle",
     "license": "LGPL-3.0-or-later",
     "authors": [
         {
